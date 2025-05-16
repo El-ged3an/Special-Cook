@@ -19,7 +19,7 @@ jobs:
           - 3308:3306
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: specialcookdb
+          MYSQL_DATABASE: SpecialCookDB  
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
           --health-interval=10s
@@ -59,15 +59,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
-          echo "Importing schema from init.sql..."
-          mysql -h 127.0.0.1 -P 3308 -u root specialcookdb < src/test/resources/init.sql
+          echo "Importing schema into SpecialCookDB..."
+          mysql -h 127.0.0.1 -P 3308 -u root SpecialCookDB < src/test/resources/init.sql
 
-      - name: Build, Test, Coverage, and Analyze with SonarQube
+      - name: Debug: List databases (optional)
+        run: |
+          mysql -h 127.0.0.1 -P 3308 -u root -e "SHOW DATABASES;"
+
+      - name: Build, Test, and Analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DB_HOST: 127.0.0.1
           DB_PORT: 3308
-          DB_NAME: specialcookdb
+          DB_NAME: SpecialCookDB
           DB_USER: root
           DB_PASS: ""
         run: |
