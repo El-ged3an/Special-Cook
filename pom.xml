@@ -3,11 +3,33 @@
   <groupId>software_project</groupId>
   <artifactId>software_project</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.11</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>prepare-agent</goal>
+          </goals>
+        </execution>
+        <execution>
+          <id>report</id>
+          <phase>prepare-package</phase>
+          <goals>
+            <goal>report</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
 
   <properties>
   <sonar.organization>El-ged3an</sonar.organization>
   <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-  <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
   
   <dependencies>
@@ -49,31 +71,5 @@
     <version>2.8.9</version>
 </dependency>
 </dependencies>
-
-
-
-  <build>
-  <plugins>
-    <plugin>
-      <groupId>org.jacoco</groupId>
-      <artifactId>jacoco-maven-plugin</artifactId>
-      <version>0.8.11</version>
-      <executions>
-        <execution>
-          <goals>
-            <goal>prepare-agent</goal>
-          </goals>
-        </execution>
-        <execution>
-          <id>report</id>
-          <phase>prepare-package</phase>
-          <goals>
-            <goal>report</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
-</build>
 
 </project>
