@@ -188,10 +188,10 @@ UNLOCK TABLES;
 -- Table structure for table `Meal_Ingredients`
 --
 
-DROP TABLE IF EXISTS `meal_Ingredients`;
+DROP TABLE IF EXISTS `Meal_Ingredients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `meal_Ingredients` (
+CREATE TABLE `Meal_Ingredients` (
   `meal_id` int NOT NULL,
   `ingredient_id` int NOT NULL,
   `quantity` int NOT NULL,
@@ -206,9 +206,9 @@ CREATE TABLE `meal_Ingredients` (
 -- Dumping data for table `Meal_Ingredients`
 --
 
-LOCK TABLES `meal_Ingredients` WRITE;
+LOCK TABLES `Meal_Ingredients` WRITE;
 /*!40000 ALTER TABLE `Meal_Ingredients` DISABLE KEYS */;
-INSERT INTO `meal_Ingredients` VALUES (1,2,2),(1,3,1),(1,6,2),(2,2,1),(2,5,1),(2,6,2),(4,2,1),(4,6,1),(7,3,5),(7,6,3);
+INSERT INTO `Meal_Ingredients` VALUES (1,2,2),(1,3,1),(1,6,2),(2,2,1),(2,5,1),(2,6,2),(4,2,1),(4,6,1),(7,3,5),(7,6,3);
 /*!40000 ALTER TABLE `Meal_Ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,10 +216,10 @@ UNLOCK TABLES;
 -- Table structure for table `Meals`
 --
 
-DROP TABLE IF EXISTS `meals`;
+DROP TABLE IF EXISTS `Meals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `meals` (
+CREATE TABLE `Meals` (
   `meal_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` text,
@@ -232,9 +232,9 @@ CREATE TABLE `meals` (
 -- Dumping data for table `Meals`
 --
 
-LOCK TABLES `meals` WRITE;
+LOCK TABLES `Meals` WRITE;
 /*!40000 ALTER TABLE `Meals` DISABLE KEYS */;
-INSERT INTO `meals` VALUES (1,'Chicken Salad','Grilled chicken with mixed greens and vinaigrette',12.50),(2,'Pasta Primavera','Pasta with seasonal vegetables and tomato sauce',10.00),(4,'Custom les','special',15.00),(7,'jemapple zaki','very yumm',40.00),(101,'Spaghetti','Delicious pasta',12.50),(102,'Veggie Pizza','Cheesy veggie pizza',11.00),(104,'Burger','Beef burger',9.50),(105,'Fries','Crispy fries',4.50);
+INSERT INTO `Meals` VALUES (1,'Chicken Salad','Grilled chicken with mixed greens and vinaigrette',12.50),(2,'Pasta Primavera','Pasta with seasonal vegetables and tomato sauce',10.00),(4,'Custom les','special',15.00),(7,'jemapple zaki','very yumm',40.00),(101,'Spaghetti','Delicious pasta',12.50),(102,'Veggie Pizza','Cheesy veggie pizza',11.00),(104,'Burger','Beef burger',9.50),(105,'Fries','Crispy fries',4.50);
 /*!40000 ALTER TABLE `Meals` ENABLE KEYS */;
 UNLOCK TABLES;
 
