@@ -55,13 +55,14 @@ jobs:
       - name: Wait for MySQL to be ready
         run: sleep 15
 
-      - name: Install MySQL client and import SQL
+      - name: Install MySQL client and import init.sql
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
+          echo "Importing schema from init.sql..."
           mysql -h 127.0.0.1 -P 3308 -u root specialcookdb < src/test/resources/init.sql
 
-      - name: Build, Test, and Analyze with SonarQube
+      - name: Build, Test, Coverage, and Analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DB_HOST: 127.0.0.1
@@ -70,10 +71,9 @@ jobs:
           DB_USER: root
           DB_PASS: ""
         run: |
-          mvn -B jacoco:prepare-agent verify \
+          mvn -B jacoco:prepare-agent verify jacoco:report \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=El-ged3an_Special-Cook \
-            jacoco:report
+            -Dsonar.projectKey=El-ged3an_Special-Cook
 
       - name: Upload Surefire Reports on failure
         if: failure()
