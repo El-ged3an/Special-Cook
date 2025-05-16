@@ -3,6 +3,12 @@
   <groupId>software_project</groupId>
   <artifactId>software_project</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+  <sonar.organization>el-ged3an</sonar.organization>
+  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  </properties>
+  
   <dependencies>
    <!-- Cucumber Dependencies -->
 <dependency>
