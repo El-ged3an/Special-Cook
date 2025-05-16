@@ -59,7 +59,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 -P 3308 -u root specialcookdb < src/test/resources/db/init.sql
+          mysql -h 127.0.0.1 -P 3308 -u root specialcookdb < src/test/resources/init.sql
 
       - name: Build, Test, and Analyze with SonarQube
         env:
