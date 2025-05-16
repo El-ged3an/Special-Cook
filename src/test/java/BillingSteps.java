@@ -30,7 +30,7 @@ public class BillingSteps {
 
     @When("I add the billing record")
     public void i_add_the_billing_record() {
-       // resultMessage = billingDAO.addBilling(1, 1, 100.50, "Pending");
+       resultMessage = billingDAO.addBilling(1, 1, 100.50, "Pending");
     }
 
     @Then("the system should return {string}")
