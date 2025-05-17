@@ -58,14 +58,14 @@ public class MealDAOSteps {
 
     @Then("the meal's name should be {string}")
     public void check_meal_name(String expectedName) {
-        //assertNotNull("Retrieved meal should not be null", retrievedMeal);
-        //assertEquals(expectedName, retrievedMeal.getName());
+        assertNotNull("Retrieved meal should not be null", retrievedMeal);
+        assertEquals(expectedName, retrievedMeal.getName());
     }
 
     @Then("the meal's description should be {string}")
     public void check_meal_description(String expectedDescription) {
-       // assertNotNull("Retrieved meal should not be null", retrievedMeal);
-        //assertEquals(expectedDescription, retrievedMeal.getDescription());
+       assertNotNull("Retrieved meal should not be null", retrievedMeal);
+       assertEquals(expectedDescription, retrievedMeal.getDescription());
     }
 
     @Then("the meal's price should be {string}")
