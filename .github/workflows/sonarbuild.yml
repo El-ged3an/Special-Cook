@@ -61,7 +61,7 @@ jobs:
 
       - name: Build, Test, Coverage & Sonar
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: 44ff9099f217be34f4f0c86b2684cc5dc4be886b
         run: |
           mvn -B clean verify -Pcoverage \
             org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
