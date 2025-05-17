@@ -27,7 +27,8 @@ jobs:
           --health-retries=3
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -54,22 +55,22 @@ jobs:
       - name: Wait for MySQL to be ready
         run: sleep 15
 
-      - name: Install MySQL client and import schema
+      - name: Import schema
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 -P 3308 -u root SpecialCookDB < src/test/resources/init.sql
+          mysql -h 127.0.0.1 -P 3308 -u root SpecialCookDB \
+            < src/test/resources/init.sql
 
-      - name: Build, Test, and Analyze
+      - name: Build, Test and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B jacoco:prepare-agent verify jacoco:report \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
             -Dsonar.projectKey=El-ged3an_Special-Cook \
             -Dsonar.organization=el-ged3an \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.host.url=https://sonarcloud.io
 
       - name: Upload Surefire Reports on failure
         if: failure()
