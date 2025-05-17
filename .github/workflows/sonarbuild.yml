@@ -19,7 +19,7 @@ jobs:
           - 3308:3306
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: SpecialCookDB  
+          MYSQL_DATABASE: SpecialCookDB
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 --silent"
           --health-interval=10s
@@ -27,8 +27,7 @@ jobs:
           --health-retries=3
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -55,25 +54,22 @@ jobs:
       - name: Wait for MySQL to be ready
         run: sleep 15
 
-      - name: Install MySQL client and import init.sql
+      - name: Install MySQL client and import schema
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-client
-          echo "Importing schema into SpecialCookDB..."
           mysql -h 127.0.0.1 -P 3308 -u root SpecialCookDB < src/test/resources/init.sql
 
-      - name: Build, Test, and Analyze with SonarQube
+      - name: Build, Test, and Analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3308
-          DB_NAME: SpecialCookDB
-          DB_USER: root
-          DB_PASS: ""
         run: |
           mvn -B jacoco:prepare-agent verify jacoco:report \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=El-ged3an_Special-Cook
+            -Dsonar.projectKey=El-ged3an_Special-Cook \
+            -Dsonar.organization=el-ged3an \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
       - name: Upload Surefire Reports on failure
         if: failure()
