@@ -629,14 +629,12 @@ INSERT INTO `KitchenManagers` VALUES (2,'John Doe','john.doe@example.com');
 /*!40000 ALTER TABLE `KitchenManagers` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `Meal_Ingredients`
---
+-- Table structure for table `meal_ingredients`
 
-DROP TABLE IF EXISTS `Meal_Ingredients`;
+DROP TABLE IF EXISTS `meal_ingredients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Meal_Ingredients` (
+CREATE TABLE `meal_ingredients` (
   `meal_id` int NOT NULL,
   `ingredient_id` int NOT NULL,
   `quantity` int NOT NULL,
@@ -647,18 +645,16 @@ CREATE TABLE `Meal_Ingredients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `Meal_Ingredients`
---
+-- Dumping data for table `meal_ingredients`
 
-LOCK TABLES `Meal_Ingredients` WRITE;
-/*!40000 ALTER TABLE `Meal_Ingredients` DISABLE KEYS */;
-INSERT INTO `Meal_Ingredients` VALUES 
+LOCK TABLES `meal_ingredients` WRITE;
+/*!40000 ALTER TABLE `meal_ingredients` DISABLE KEYS */;
+INSERT INTO `meal_ingredients` VALUES 
 (1,2,2),(1,3,1),(1,6,2),
 (2,2,1),(2,5,1),(2,6,2),
 (4,2,1),(4,6,1),
 (7,3,5),(7,6,3);
-/*!40000 ALTER TABLE `Meal_Ingredients` ENABLE KEYS */;
+/*!40000 ALTER TABLE `meal_ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
