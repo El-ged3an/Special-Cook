@@ -1,11 +1,11 @@
+# .github/workflows/sonar.yml
 name: SonarQube
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
@@ -15,8 +15,7 @@ jobs:
     services:
       mysql:
         image: mysql:8.0
-        ports:
-          - 3308:3306
+        ports: [ "3308:3306" ]
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: SpecialCookDB
@@ -27,7 +26,7 @@ jobs:
           --health-retries=3
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -36,23 +35,21 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu'
+          distribution: zulu
 
-      - name: Cache SonarQube packages
+      - name: Cache Sonar
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Maven packages
+      - name: Cache Maven
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
 
-      - name: Wait for MySQL to be ready
+      - name: Wait for MySQL
         run: sleep 15
 
       - name: Import schema
@@ -62,19 +59,19 @@ jobs:
           mysql -h 127.0.0.1 -P 3308 -u root SpecialCookDB \
             < src/test/resources/init.sql
 
-      - name: Build, Test and Analyze
+      - name: Build, Test, Coverage & Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn -B jacoco:prepare-agent verify jacoco:report \
+          mvn -B clean verify -Pcoverage \
             org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar \
             -Dsonar.projectKey=El-ged3an_Special-Cook \
             -Dsonar.organization=el-ged3an \
             -Dsonar.host.url=https://sonarcloud.io
 
-      - name: Upload Surefire Reports on failure
+      - name: Upload Surefire on Failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
-          path: target/surefire-reports
+          path: target/surefire-reports/
