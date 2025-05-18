@@ -2,3 +2,7 @@
 /InventoryCRUDTest.class
 /UserTest.class
 /SupplierPaymentsDAOTest.class
+/SupplierPaymentsDAOTest$DummyConnection.class
+/SupplierPaymentsDAOTest$DummyPreparedStatement.class
+/SupplierPaymentsDAOTest$DummyResultSet.class
+/SupplierPaymentsDAOTest$DummyStatement.class
