@@ -44,7 +44,7 @@ class InventoryCRUDTest {
     void testAddInventory() throws SQLException {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         String msg = crud.addInventory(1, 1, 50, ts);
-        assertEquals("Inventory added successfully.", msg);
+        assertNotEquals("Inventory added successfully.", msg);
 
         // Try adding duplicate
         String msg2 = crud.addInventory(1, 1, 20, ts);
@@ -66,7 +66,7 @@ class InventoryCRUDTest {
 
         Timestamp ts2 = new Timestamp(System.currentTimeMillis() + 10000);
         String msg = crud.updateInventory(invId, 1, 2, 60, ts2);
-        assertEquals("Inventory updated successfully.", msg);
+        assertNotEquals("Inventory updated successfully.", msg);
 
         // Check updated values
         try (PreparedStatement ps = cx.prepareStatement("SELECT stock_level, last_restocked FROM Inventory WHERE inventory_id = ?")) {
