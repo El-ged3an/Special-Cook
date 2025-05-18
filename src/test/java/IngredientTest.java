@@ -52,7 +52,7 @@ public class IngredientTest {
     @Test
     public void testAddIngredient_SuccessAndRetrieve() throws SQLException {
         String msg = Ingredient.addIngredient("Sugar", 10, "kg", 2.5);
-        assertNotEquals("Ingredient added successfully!", msg);
+        assertEquals("Ingredient added successfully!", msg);
 
         // Verify via getIngredientByName
         String byName = Ingredient.getIngredientByName("Sugar");
@@ -67,7 +67,7 @@ public class IngredientTest {
 
     @Test
     public void testAddIngredient_Duplicate() {
-        assertNotEquals("Ingredient added successfully!", Ingredient.addIngredient("Pepper", 5, "g", 0.75));
+        assertEquals("Ingredient added successfully!", Ingredient.addIngredient("Pepper", 5, "g", 0.75));
         String dup = Ingredient.addIngredient("Pepper", 5, "g", 0.75);
         assertEquals("Ingredient already exists!", dup);
     }
@@ -84,7 +84,7 @@ public class IngredientTest {
         }
 
         String upd = Ingredient.updateIngredient(id, "Sea Salt", 25, "g", 0.60);
-        assertNotEquals("Ingredient updated successfully!", upd);
+        assertEquals("Ingredient updated successfully!", upd);
 
         String byName = Ingredient.getIngredientByName("Sea Salt");
         assertTrue(byName.contains("Sea Salt"));
