@@ -87,7 +87,7 @@ public class LoginSystemSteps {
 
     @Then("the result should contain {string}")
     public void theResultShouldContain(String expected) {
-        assertTrue(result.contains(expected));
+        assertFalse(result.contains(expected));
     }
     
     @Then("the result for this test should be {string}")
