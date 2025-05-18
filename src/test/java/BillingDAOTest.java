@@ -3,7 +3,7 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class billingdaotestjunit {
+public class BillingDAOTest {
     private static Connection conn;
     private static BillingDAO dao;
     private static final String DB_URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
