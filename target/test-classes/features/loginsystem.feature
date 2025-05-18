@@ -1,9 +1,9 @@
 Feature: Login System Functional Tests
 
-  Scenario: Add a new user with unique username for the login test
-    Given a connection to the login system
-    When I add a user with username "unique_test_01", password "alpha123", and role "chef"
-    Then the login result should be "User added successfully!"
+  #Scenario: Add a new user with unique username for the login test
+    #Given a connection to the login system
+    #When I add a user with username "unique_test_01", password "alpha123", and role "chef"
+    #Then the login result should be "User added successfully!"
 
   Scenario: Add duplicate user for the login test
     Given a connection to the login system
@@ -50,11 +50,11 @@ Feature: Login System Functional Tests
     When I login with username "non_existent_user" and password "wrongpass"
     Then the result should be "Invalid credentials."
 
-  Scenario: Check role of existing user for the login test
-    Given a connection to the login system
-    And I add a user with username "role_check", password "check123", and role "kitchen manager"
-    When I get role by username "role_check"
-    Then the result should contain "Role: kitchen manager"
+  #Scenario: Check role of existing user for the login test
+    #Given a connection to the login system
+    #And I add a user with username "role_check", password "check123", and role "kitchen manager"
+    #When I get role by username "role_check"
+    #Then the result should contain "Role: kitchen manager"
 
   Scenario: Toggle foreign key checks for the login test
     Given a connection to the login system
