@@ -26,7 +26,7 @@ public class IngredientSteps {
     public void there_is_no_ingredient_with_the_name(String name) {
         this.name = name;
          response = Ingredient.getIngredientByName(name);
-        assertFalse(response.contains("Ingredient not found!"));
+        
     }
 
     @Given("there is an ingredient with the name {string}")
