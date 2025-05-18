@@ -1,108 +1,98 @@
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Then;
-import static org.junit.Assert.*;
+import io.cucumber.java.en.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.sql.*;
 
 public class LoginSystemSteps {
 
-    private User user;
+    private LoginSystem loginSystem;
     private String result;
-    private User retrievedUser;
+    private Connection conn;
 
-    @Given("I am connected to the SpecialCookDB database")
-    public void i_am_connected_to_the_SpecialCookDB_database() {
-        // This is a setup step, connection should be handled by your database management tools or connection pooling
+    private static final String DB_URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "";
+
+    private int getUserIdByUsername(String username) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT user_id FROM Users WHERE username = ?");
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
+        return rs.next() ? rs.getInt("user_id") : -1;
+    }
+
+    @Given("a connection to the login system")
+    public void connectToLoginSystem() throws SQLException {
+        conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        loginSystem = new LoginSystem(conn);
     }
 
     @When("I add a user with username {string}, password {string}, and role {string}")
-    public void i_add_a_user_with_username_password_and_role(String username, String password, String role) {
-        user = new User(0, username, password, role);
-        result = User.addUser(user);
+    public void addUser(String username, String password, String role) {
+        result = loginSystem.addUser(username, password, role);
     }
 
-    @Then("the user should be added successfully")
-    public void the_user_should_be_added_successfully() {
-        assertEquals("User added successfully!", "User added successfully!");
+    @When("I update user with ID of {string} to username {string}, password {string}, and role {string}")
+    public void updateExistingUser(String oldUsername, String newUsername, String newPassword, String newRole) throws SQLException {
+        int id = getUserIdByUsername(oldUsername);
+        result = loginSystem.updateUser(id, newUsername, newPassword, newRole);
     }
 
-    @Then("the username {string} should not already exist in the Users table")
-    public void the_username_should_not_already_exist_in_the_Users_table(String username) {
-        assertNull(User.getUserById(0)); // Here we are assuming the user has id 0 before insertion, check for existence by username
+    @When("I update user with ID {int} to username {string}, password {string}, and role {string}")
+    public void updateNonExistentUser(int id, String username, String password, String role) {
+        result = loginSystem.updateUser(id, username, password, role);
     }
 
-    @When("I try to add a user with username {string}, password {string}, and role {string}")
-    public void i_try_to_add_a_user_with_username_password_and_role(String username, String password, String role) {
-        user = new User(0, username, password, role);
-        result = User.addUser(user);
-    }
- 
-
-    @Given("a user with user_id {int} exists")
-    public void a_user_with_user_id_exists(int userId) {
-        user = new User(userId, "john_doe", "password123", "Customer");
-        User.addUser(user); // Ensure the user exists
+    @When("I get user by username {string}")
+    public void getUserByUsername(String username) throws SQLException {
+        int id = getUserIdByUsername(username);
+        result = loginSystem.getUser(id);
     }
 
-    @When("I update the user with user_id {int} to have username {string}, password {string}, and role {string}")
-    public void i_update_the_user_with_user_id_to_have_username_password_and_role(int userId, String username, String password, String role) {
-        user = new User(userId, username, password, role);
-        result = User.updateUser(user);
+    @When("I delete user by username {string}")
+    public void deleteUserByUsername(String username) throws SQLException {
+        int id = getUserIdByUsername(username);
+        result = loginSystem.deleteUser(id);
     }
 
-    @Then("the user with user_id {int} should have the updated information")
-    public void the_user_with_user_id_should_have_the_updated_information(int userId) {
-        User updatedUser = User.getUserById(userId);
-        assertNull(updatedUser);
-        
+    @When("I delete user with ID {int}")
+    public void deleteUserById(int id) {
+        result = loginSystem.deleteUser(id);
     }
 
-    @When("I try to update a user with user_id {int}")
-    public void i_try_to_update_a_user_with_user_id(int userId) {
-        user = new User(userId, "unknown_user", "password", "Admin");
-        result = User.updateUser(user);
+    @When("I login with username {string} and password {string}")
+    public void loginUser(String username, String password) {
+        result = loginSystem.login(username, password);
     }
 
-   
-
-    @When("I delete the user with user_id {int}")
-    public void i_delete_the_user_with_user_id(int userId) {
-        result = User.deleteUser(userId);
-    }
- 
-    @When("I try to retrieve a user with user_id {int}")
-    public void i_try_to_retrieve_a_user_with_user_id(Integer int1) {
+    @When("I get role by username {string}")
+    public void getRoleByUsername(String username) throws SQLException {
+        int id = getUserIdByUsername(username);
+        result = loginSystem.checkRole(id);
     }
 
-
-
-    @Then("the user with user_id {int} should no longer exist in the Users table")
-    public void the_user_with_user_id_should_no_longer_exist_in_the_Users_table(int userId) {
-        assertNull(User.getUserById(userId));
+    @When("I enable foreign key checks")
+    public void enableFKChecks() {
+        result = loginSystem.setForeignKeyChecks(true);
     }
 
-    @When("I try to delete a user with user_id {int}")
-    public void i_try_to_delete_a_user_with_user_id(int userId) {
-        result = User.deleteUser(userId);
+    @When("I disable foreign key checks")
+    public void disableFKChecks() {
+        result = loginSystem.setForeignKeyChecks(false);
     }
 
-    @Then("I should receive a message {string}")
-    public void i_should_receive_a_message_3(String expectedMessage) {
-        assertEquals(expectedMessage, result);
+    @Then("the login result should be {string}") // MISSING
+    public void theLoginResultShouldBe(String expected) {
+        assertEquals(expected, result);
     }
 
-    @When("I retrieve the user with user_id {int}")
-    public void i_retrieve_the_user_with_user_id(int userId) {
-        retrievedUser = User.getUserById(userId);
+    @Then("the result should contain {string}")
+    public void theResultShouldContain(String expected) {
+        assertTrue(result.contains(expected));
+    }
+    
+    @Then("the result for this test should be {string}")
+    public void theResultForThisTestShouldBe(String expected) {
+        assertEquals(expected, result);
     }
 
-    @Then("I should get the user's details with username {string}, password {string}, and role {string}")
-    public void i_should_get_the_user_s_details_with_username_password_and_role(String username, String password, String role) {
-        assertNull(retrievedUser);
-       
-    }
-
-    @Then("I should receive {string} or no user data")
-    public void i_should_receive_or_no_user_data(String expected) {
-        assertNull(retrievedUser);
-    }
 }
