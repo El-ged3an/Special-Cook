@@ -19,28 +19,28 @@ public class BillingDAOJUnitTest {
     }
 
     @Test
-    @Order(1)
+    
     public void testAddBilling() {
         String res = dao.addBilling(dummyOrderId, dummyCustomerId, dummyAmount, dummyStatus);
         Assertions.assertNotNull(res);
     }
 
     @Test
-    @Order(2)
+ 
     public void testGetBillingById() {
         String res = dao.getBillingById(dummyBillingId);
         Assertions.assertNotNull(res);
     }
 
     @Test
-    @Order(3)
+  
     public void testUpdateBilling() {
         String res = dao.updateBilling(dummyBillingId, dummyOrderId, dummyCustomerId, dummyAmount, dummyStatus);
         Assertions.assertNotNull(res);
     }
 
     @Test
-    @Order(4)
+   
     public void testDeleteBilling() {
         String res = dao.deleteBilling(dummyBillingId);
         Assertions.assertNotNull(res);
