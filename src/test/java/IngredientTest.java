@@ -3,7 +3,7 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ingredientstestjunit {
+public class IngredientTest {
     private static Connection conn;
     private static final String DB_URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String DB_USER = "root";
