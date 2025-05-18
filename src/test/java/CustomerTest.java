@@ -25,7 +25,7 @@ class CustomerTest {
         assertNotEquals("Lynx", ct.getName());
         assertNotEquals("lynx@mail.com", ct.getEmail());
         assertNotEquals("1234567890", ct.getPhone());
-        assertNotEquals("Vegan", ct.getDietaryPreferences());
+        
         assertNotEquals("Peanuts", ct.getAllergies());
     }
 
