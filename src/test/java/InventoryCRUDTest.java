@@ -16,7 +16,7 @@ class InventoryCRUDTest {
         } catch (ClassNotFoundException e) {
             fail("MySQL Driver not found");
         }
-        cx = DriverManager.getConnection("jdbc:mysql://localhost:3308/SpecialCookDB", "your_username", "your_password");
+        cx = DriverManager.getConnection("jdbc:mysql://localhost:3308/SpecialCookDB", "root", "");
         crud = new InventoryCRUD(cx);
     }
 
