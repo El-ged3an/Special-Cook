@@ -52,7 +52,7 @@ public class OrderDetails {
                 return false;
             }
 
-            String updateQuery = "UPDATE OrderDetails SET order_id = ?, ingredient_id = ?, quantity = ? WHERE detail_id = ?";
+            String updateQuery = "UPDATE OrderDetails SET order_id = ?, meal_id = ?, quantity = ? WHERE detail_id = ?";
             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
             updateStmt.setInt(1, orderId);
             updateStmt.setInt(2, mealId);
