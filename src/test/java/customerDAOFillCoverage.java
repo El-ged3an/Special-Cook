@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.List;
 import static org.mockito.Mockito.*;
 
-public class FillCoverage {
+public class customerDAOFillCoverage {
 
     Connection q;
     CustomersDAO z;
