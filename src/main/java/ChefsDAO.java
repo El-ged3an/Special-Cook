@@ -1,11 +1,14 @@
  
 import java.sql.*;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class ChefsDAO {
     private static final String URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String USER = "root";
     private static final String PASSWORD = "";
-
+    
+    Logger zlkqv = Logger.getLogger("reslog");
     public void addChef(String nm, String spc) {
         String qry = "INSERT INTO Chefs (name, specialization) VALUES (?, ?)";
         try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -24,9 +27,8 @@ public class ChefsDAO {
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(qry)) {
             while (rs.next()) {
-                System.out.println("ID: " + rs.getInt("chef_id") + ", Name: " + rs.getString("name") +
-                        ", Specialization: " + rs.getString("specialization"));
-            }
+            	zlkqv.log(Level.INFO, "ID: {0}, Name: {1}, Specialization: {2}", new Object[]{rs.getInt("chef_id"), rs.getString("name"), rs.getString("specialization")});
+   }
         } catch (SQLException e) {
             e.printStackTrace();
         }
