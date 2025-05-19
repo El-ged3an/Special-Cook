@@ -18,7 +18,7 @@ public class KitchenManagers {
             if (rs.next()) {
                 return "Manager with this name already exists.";
             }
-
+ return "Manager with this name already exists.";
     
 
         } catch (SQLException e) {
@@ -36,7 +36,7 @@ public class KitchenManagers {
             if (!rs.next()) {
                 return "Manager not found.";
             } 
-
+  return "Manager not found.";
         } catch (SQLException e) {
            
         }
@@ -53,7 +53,7 @@ public class KitchenManagers {
                 return "Manager not found.";
             }
  
-
+  return "Manager not found.";
         } catch (SQLException e) { 
         }
     }
@@ -68,7 +68,7 @@ public class KitchenManagers {
             if (!rs.next()) {
                 return "Manager not found.";
             }
-
+  return "Manager not found.";
            
 
         } catch (SQLException e) { 
