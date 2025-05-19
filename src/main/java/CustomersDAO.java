@@ -47,17 +47,17 @@ public class CustomersDAO {
     }
     
     public boolean addCustomer(String name, String email, String phone ,String dietaryPreferences, String allergies) {
-        String sql = "INSERT INTO Customers (name, email, phone, dietary_preferences, allergies) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, name);
-            stmt.setString(2, email);
-            stmt.setString(3, phone);
-            stmt.setString(4, dietaryPreferences);
-            stmt.setString(5, allergies);
-            int rowsInserted = stmt.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        // String sql = "INSERT INTO Customers (name, email, phone, dietary_preferences, allergies) VALUES (?, ?, ?, ?, ?)";
+        // try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        //     stmt.setString(1, name);
+        //     stmt.setString(2, email);
+        //     stmt.setString(3, phone);
+        //     stmt.setString(4, dietaryPreferences);
+        //     stmt.setString(5, allergies);
+        //     int rowsInserted = stmt.executeUpdate();
+        //     return rowsInserted > 0;
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
         }
         return false;
     }
@@ -87,40 +87,40 @@ public class CustomersDAO {
         }
 
         // Delete related records in the tasks table
-        String deleteTasksQuery = "DELETE FROM tasks WHERE order_id IN (SELECT order_id FROM orders WHERE customer_id = ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteTasksQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
+        // String deleteTasksQuery = "DELETE FROM tasks WHERE order_id IN (SELECT order_id FROM orders WHERE customer_id = ?)";
+        // try (PreparedStatement stmt = connection.prepareStatement(deleteTasksQuery)) {
+        //     stmt.setInt(1, customerId);
+        //     stmt.executeUpdate();
+        //}
 
         // Delete related records in the billing table
-        String deleteBillingQuery = "DELETE FROM billing WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteBillingQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
+        // String deleteBillingQuery = "DELETE FROM billing WHERE customer_id = ?";
+        // try (PreparedStatement stmt = connection.prepareStatement(deleteBillingQuery)) {
+        //     stmt.setInt(1, customerId);
+        //     stmt.executeUpdate();
+        //}
 
         // Delete related records in the orders table
-        String deleteOrdersQuery = "DELETE FROM orders WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteOrdersQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
+        // String deleteOrdersQuery = "DELETE FROM orders WHERE customer_id = ?";
+        // try (PreparedStatement stmt = connection.prepareStatement(deleteOrdersQuery)) {
+        //     stmt.setInt(1, customerId);
+        //     stmt.executeUpdate();
+        //}
 
         // Delete related records in the notifications table
-        String deleteNotificationsQuery = "DELETE FROM notifications WHERE user_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteNotificationsQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
+        // String deleteNotificationsQuery = "DELETE FROM notifications WHERE user_id = ?";
+        // try (PreparedStatement stmt = connection.prepareStatement(deleteNotificationsQuery)) {
+        //     stmt.setInt(1, customerId);
+        //     stmt.executeUpdate();
+        //}
 
         // Now delete the customer
-        String deleteCustomerQuery = "DELETE FROM customers WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteCustomerQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-            return true;
-        }
+        // String deleteCustomerQuery = "DELETE FROM customers WHERE customer_id = ?";
+        // try (PreparedStatement stmt = connection.prepareStatement(deleteCustomerQuery)) {
+        //     stmt.setInt(1, customerId);
+        //     stmt.executeUpdate();
+        //     return true;
+        // }
     }
 
 
