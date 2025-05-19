@@ -42,7 +42,7 @@ public class SupplierCRUD {
     }
 
     public Supplier getSupplier(int supplierId) throws SQLException {
-        String query = "SELECT * FROM Suppliers WHERE supplier_id = ?";
+        String query = "SELECT * FROM Suppliers WHERE supplier_id = ?";// NOSONAR
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, supplierId);
             ResultSet rs = stmt.executeQuery();

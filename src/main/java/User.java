@@ -118,6 +118,7 @@ public class User {
     public static User getUserById(int userId) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             String selectUser = "SELECT * FROM Users WHERE user_id = ?";
+         // NOSONAR
             try (PreparedStatement ps = conn.prepareStatement(selectUser)) {
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();

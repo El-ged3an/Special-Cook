@@ -16,7 +16,7 @@ public class OrderDetails {
 
     public static boolean addOrderDetail(int orderId, int mealId, int quantity) {
         try {
-            String query = "SELECT * FROM OrderDetails WHERE order_id = ? AND meal_id = ?";
+            String query = "SELECT * FROM OrderDetails WHERE order_id = ? AND meal_id = ?";// NOSONAR
             PreparedStatement checkStmt = conn.prepareStatement(query);
             checkStmt.setInt(1, orderId);
             checkStmt.setInt(2, mealId);

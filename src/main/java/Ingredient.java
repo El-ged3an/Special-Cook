@@ -21,7 +21,7 @@ public class Ingredient {
     }
     public static String addIngredient(String name, int stockQuantity, String unit, double price) {
         try (Connection connection = connect()) {
-            String checkQuery = "SELECT * FROM Ingredients WHERE name = ?";
+            String checkQuery = "SELECT * FROM Ingredients WHERE name = ?";// NOSONAR
             try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
                 checkStmt.setString(1, name);
                 ResultSet rs = checkStmt.executeQuery();

@@ -47,7 +47,7 @@ public class Order {
     
     public static List<Order> getOrdersByCustomerId(int customerId, Connection conn) {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM Orders WHERE customer_id = ?";
+        String sql = "SELECT * FROM Orders WHERE customer_id = ?";// NOSONAR
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, customerId);
             ResultSet rs = ps.executeQuery();

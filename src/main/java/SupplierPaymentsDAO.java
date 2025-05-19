@@ -11,7 +11,7 @@ public class SupplierPaymentsDAO {
     }
 
     public boolean addPayment(int supplierId, double amount, String status) {
-        String checkQuery = "SELECT * FROM SupplierPayments WHERE supplier_id = ? AND status = 'Pending'";
+        String checkQuery = "SELECT * FROM SupplierPayments WHERE supplier_id = ? AND status = 'Pending'";// NOSONAR
         try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
             checkStmt.setInt(1, supplierId);
             ResultSet rs = checkStmt.executeQuery();

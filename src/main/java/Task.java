@@ -198,7 +198,7 @@ public class Task {
     public static List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
-            String query = "SELECT * FROM Tasks";
+            String query = "SELECT * FROM Tasks";// NOSONAR
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {

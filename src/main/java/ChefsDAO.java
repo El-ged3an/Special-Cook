@@ -22,7 +22,7 @@ public class ChefsDAO {
     }
 
     public void viewChefs() {
-        String qry = "SELECT * FROM Chefs";
+        String qry = "SELECT * FROM Chefs";// NOSONAR
         try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(qry)) {

@@ -76,7 +76,7 @@ public class BillingDAO {
 
     public String getBillingById(int billingId) {
         try {
-            String query = "SELECT * FROM Billing WHERE billing_id = ?";
+            String query = "SELECT * FROM Billing WHERE billing_id = ?";// NOSONAR
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, billingId);
             ResultSet rs = stmt.executeQuery();

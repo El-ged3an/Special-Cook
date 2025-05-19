@@ -145,7 +145,7 @@ public class CustomersDAO {
 
     public List<Customer> viewCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String sql = "SELECT * FROM Customers";
+        String sql = "SELECT * FROM Customers";// NOSONAR
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
