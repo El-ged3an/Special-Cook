@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class User {
-    private int userId;
+     int userId;
   String username;
     String password;
       String role;
