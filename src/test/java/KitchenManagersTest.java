@@ -6,7 +6,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class KitchenManagersTest {
-    private static final String DB_URL      = "jdbc:mysql://localhost:3308/specialcookdb";
+    private static final String DB_URL      = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String DB_USER     = "root";
     private static final String DB_PASSWORD = "";
 
