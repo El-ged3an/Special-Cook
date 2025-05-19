@@ -1,156 +1,176 @@
 import org.junit.jupiter.api.*;
 import java.sql.*;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserTest {
-    private static Connection conn;
-    private static final String DB_URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
-    private static final String DB_USER = "root";
+    private static final String DB_URL      = "jdbc:mysql://localhost:3308/SpecialCookDB";
+    private static final String DB_USER     = "root";
     private static final String DB_PASSWORD = "";
 
+    private Connection manualConn;
+    private List<Integer> cleanupUserIds;
+
     @BeforeAll
-    public static void setupDatabase() throws SQLException {
-        conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        // Disable foreign key checks for testing
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("SET FOREIGN_KEY_CHECKS=0");
-        }
+    void initDatabase() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        manualConn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
     @AfterAll
-    public static void teardownDatabase() throws SQLException {
-        // Re-enable foreign key checks
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("SET FOREIGN_KEY_CHECKS=1");
-        }
-        if (conn != null && !conn.isClosed()) {
-            conn.close();
+    void closeDatabase() throws SQLException {
+        if (manualConn != null && !manualConn.isClosed()) {
+            manualConn.close();
         }
     }
 
     @BeforeEach
-    public void beginTransaction() throws SQLException {
-        conn.setAutoCommit(false);
+    void setUp() {
+        cleanupUserIds = new ArrayList<>();
     }
 
     @AfterEach
-    public void rollbackTransaction() throws SQLException {
-        conn.rollback();
-        conn.setAutoCommit(true);
-    }
-
-    private String uniqueUsername(String prefix) {
-        return prefix + "_" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
-    }
-
-    @Test
-    public void testAddUser_SuccessAndRetrieve() throws SQLException {
-        String uname = uniqueUsername("testuser");
-        User newUser = new User(0, uname, "pass123", "USER");
-        String result = User.addUser(newUser);
-        assertNotEquals("User added successfully!", result);
-
-        // Verify via fresh connection to avoid transaction isolation issues
-        int id;
-        try (Connection vConn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement ps = vConn.prepareStatement("SELECT user_id FROM Users WHERE username = ?")) {
-            ps.setString(1, uname);
-            ResultSet rs = ps.executeQuery();
-            assertFalse(rs.next(), "Inserted user should be present");
-            //id = rs.getInt(1);
+    void tearDown() throws SQLException {
+        // disable FK checks so we can delete whatever we inserted
+        try (Statement s = manualConn.createStatement()) {
+            s.executeUpdate("SET FOREIGN_KEY_CHECKS = 0;");
         }
+        for (int id : cleanupUserIds) {
+            try (PreparedStatement p = manualConn.prepareStatement(
+                    "DELETE FROM Users WHERE user_id = ?")) {
+                p.setInt(1, id);
+                p.executeUpdate();
+            }
+        }
+        try (Statement s = manualConn.createStatement()) {
+            s.executeUpdate("SET FOREIGN_KEY_CHECKS = 1;");
+        }
+    }
 
-//        // Verify via getUserById
-//        User retrieved = User.getUserById(id);
-//        assertNotNull(retrieved);
-//        // Use package-private access for username and role
-//        assertEquals(uname, retrieved.username);
-//        assertEquals("pass123", retrieved.getPassword());
-//        assertEquals("USER", retrieved.role);
+    // helper to look up the user_id by username
+    private int findUserIdByUsername(String username) throws SQLException {
+        try (PreparedStatement p = manualConn.prepareStatement(
+                "SELECT user_id FROM Users WHERE username = ?")) {
+            p.setString(1, username);
+            try (ResultSet rs = p.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
+        throw new AssertionError("Could not find user with username: " + username);
     }
 
     @Test
-    public void testAddUser_Duplicate() throws SQLException {
-        String uname = uniqueUsername("dupuser");
-        User u = new User(0, uname, "pwd", "ADMIN");
+    void testAddUserSuccessAndGetById() throws SQLException {
+        String username = "testAddUser" + System.nanoTime();
+        String password = "secret";
+        String role     = "Customer";  // must be one of: Customer, Kitchen Manager, Admin, Chef
+
+        User u = new User(0, username, password, role);
+        String res = User.addUser(u);
+        assertEquals("User added successfully!", res);
+
+        int id = findUserIdByUsername(username);
+        cleanupUserIds.add(id);
+
+        User fetched = User.getUserById(id);
+        assertNotNull(fetched);
+        assertEquals(id,    fetched.userId);
+        assertEquals(username, fetched.username);
+        assertEquals(password, fetched.getPassword());
+        assertEquals(role,     fetched.role);
+    }
+
+    @Test
+    void testAddUserAlreadyExists() throws SQLException {
+        String username = "testDupUser" + System.nanoTime();
+        String password = "pwd";
+        String role     = "Chef";
+
+        // first insert
+        User u1 = new User(0, username, password, role);
+        String first = User.addUser(u1);
+        assertEquals("User added successfully!", first);
+        int id = findUserIdByUsername(username);
+        cleanupUserIds.add(id);
+
+        // second insert should detect duplicate
+        User u2 = new User(0, username, "other", "Admin");
+        String second = User.addUser(u2);
+        assertEquals("User already exists!", second);
+
+        // verify only one row exists
+        try (PreparedStatement p = manualConn.prepareStatement(
+                "SELECT COUNT(*) FROM Users WHERE username = ?")) {
+            p.setString(1, username);
+            try (ResultSet rs = p.executeQuery()) {
+                rs.next();
+                assertEquals(1, rs.getInt(1));
+            }
+        }
+    }
+
+    @Test
+    void testUpdateUserSuccess() throws SQLException {
+        // create a user first
+        String originalName = "origUser" + System.nanoTime();
+        User orig = new User(0, originalName, "origPass", "Admin");
+        assertEquals("User added successfully!", User.addUser(orig));
+        int id = findUserIdByUsername(originalName);
+        cleanupUserIds.add(id);
+
+        // now update username, password, role
+        String newName = "updatedUser" + System.nanoTime();
+        String newPass = "newPass";
+        String newRole = "Kitchen Manager";
+        User updated = new User(id, newName, newPass, newRole);
+        String res = User.updateUser(updated);
+        assertEquals("User updated successfully!", res);
+
+        // fetch and verify
+        User fetched = User.getUserById(id);
+        assertNotNull(fetched);
+        assertEquals(newName,   fetched.username);
+        assertEquals(newPass,   fetched.getPassword());
+        assertEquals(newRole,   fetched.role);
+    }
+
+    @Test
+    void testUpdateUserNotFound() {
+        User bogus = new User(-99999, "nope", "nopass", "Admin");
+        String res = User.updateUser(bogus);
+        assertEquals("User does not exist!", res);
+    }
+
+    @Test
+    void testDeleteUserSuccess() throws SQLException {
+        String username = "toDelete" + System.nanoTime();
+        User u = new User(0, username, "p", "Chef");
         assertEquals("User added successfully!", User.addUser(u));
-        String dupResult = User.addUser(u);
-        assertEquals("User already exists!", dupResult);
+        int id = findUserIdByUsername(username);
+        // delete it
+        String res = User.deleteUser(id);
+        assertEquals("User deleted successfully!", res);
+
+        // should be gone
+        assertNull(User.getUserById(id));
     }
 
     @Test
-    public void testUpdateUser_Success() throws SQLException {
-        String uname = uniqueUsername("upduser");
-        User u = new User(0, uname, "oldpass", "USER");
-        assertNotEquals("User added successfully!", User.addUser(u));
-
-        int id;
-        try (Connection vConn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement ps = vConn.prepareStatement("SELECT user_id FROM Users WHERE username = ?")) {
-            ps.setString(1, uname);
-            ResultSet rs = ps.executeQuery();
-            assertFalse(rs.next(), "Inserted user should be present");
-            //id = rs.getInt(1);
-        }
-
-//        String newName = uniqueUsername("updated");
-//        User updated = new User(id, newName, "newpass", "ADMIN");
-//        String updateMsg = User.updateUser(updated);
-//        assertEquals("User updated successfully!", updateMsg);
-//
-//        User retrieved = User.getUserById(id);
-//        assertNotNull(retrieved);
-//        assertEquals(newName, retrieved.username);
-//        assertEquals("newpass", retrieved.getPassword());
-//        assertEquals("ADMIN", retrieved.role);
+    void testDeleteUserNotFound() {
+        String res = User.deleteUser(-888888);
+        assertEquals("User does not exist!", res);
     }
 
     @Test
-    public void testUpdateUser_NonExistent() throws SQLException {
-        User non = new User(9999, uniqueUsername("nouser"), "y", "Z");
-        String msg = User.updateUser(non);
-        assertEquals("User does not exist!", msg);
+    void testGetUserByIdNotFound() {
+        assertNull(User.getUserById(-123456));
     }
 
     @Test
-    public void testDeleteUser_Success() throws SQLException {
-        String uname = uniqueUsername("deluser");
-        User u = new User(0, uname, "pwd", "USER");
-        assertNotEquals("User added successfully!", User.addUser(u));
-
-        int id;
-        try (Connection vConn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement ps = vConn.prepareStatement("SELECT user_id FROM Users WHERE username = ?")) {
-            ps.setString(1, uname);
-            ResultSet rs = ps.executeQuery();
-            assertFalse(rs.next(), "Inserted user should be present");
-            //id = rs.getInt(1);
-        }
-
-//        String delMsg = User.deleteUser(id);
-//        assertEquals("User deleted successfully!", delMsg);
-//
-//        User missing = User.getUserById(id);
-//        assertNull(missing);
-    }
-
-    @Test
-    public void testDeleteUser_NonExistent() throws SQLException {
-        String msg = User.deleteUser(888888);
-        assertEquals("User does not exist!", msg);
-    }
-
-    @Test
-    public void testGetUserById_NonExistent() throws SQLException {
-        User u = User.getUserById(777777);
-        assertNull(u);
-    }
-
-    @Test
-    public void testPasswordGetterSetter() {
-        User u = new User(1, uniqueUsername("x"), "initial", "R");
+    void testPasswordGetterSetter() {
+        User u = new User(1, "u", "initial", "Customer");
         assertEquals("initial", u.getPassword());
         u.setPassword("changed");
         assertEquals("changed", u.getPassword());
