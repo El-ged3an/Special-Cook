@@ -47,9 +47,10 @@ public class SupplierPaymentsDAO {
                 stmt.setDouble(1, amount);
                 stmt.setString(2, status);
                 stmt.setInt(3, paymentId);
-                stmt.executeUpdate();*/
-                return true;
-            }
+                stmt.executeUpdate();
+                
+            }*/
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,9 +69,10 @@ public class SupplierPaymentsDAO {
            /* String query = "DELETE FROM SupplierPayments WHERE payment_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setInt(1, paymentId);
-                stmt.executeUpdate();*/
+                stmt.executeUpdate();
                 return true;
-            }
+            }*/
+                  return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
