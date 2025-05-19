@@ -79,49 +79,56 @@ public class CustomersDAO {
     }
 
     public boolean deleteCustomer(int customerId) throws SQLException {
-        // Delete related records in the orderdetails table first
-        String deleteOrderDetailsQuery = "DELETE FROM orderdetails WHERE order_id IN (SELECT order_id FROM orders WHERE customer_id = ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteOrderDetailsQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
-
-        // Delete related records in the tasks table
-        String deleteTasksQuery = "DELETE FROM tasks WHERE order_id IN (SELECT order_id FROM orders WHERE customer_id = ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteTasksQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
-
-        // Delete related records in the billing table
-        String deleteBillingQuery = "DELETE FROM billing WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteBillingQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
-
-        // Delete related records in the orders table
-        String deleteOrdersQuery = "DELETE FROM orders WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteOrdersQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
-
-        // Delete related records in the notifications table
-        String deleteNotificationsQuery = "DELETE FROM notifications WHERE user_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteNotificationsQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-        }
-
-        // Now delete the customer
-        String deleteCustomerQuery = "DELETE FROM customers WHERE customer_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteCustomerQuery)) {
-            stmt.setInt(1, customerId);
-            stmt.executeUpdate();
-            return true;
-        }
+    // Delete related records in the OrderDetails table first
+    String deleteOrderDetailsQuery =
+      "DELETE FROM `OrderDetails` WHERE order_id IN (SELECT order_id FROM `Orders` WHERE customer_id = ?)";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteOrderDetailsQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
     }
+
+    // Delete related records in the Tasks table
+    String deleteTasksQuery =
+      "DELETE FROM `Tasks` WHERE order_id IN (SELECT order_id FROM `Orders` WHERE customer_id = ?)";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteTasksQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
+    }
+
+    // Delete related records in the Billing table
+    String deleteBillingQuery =
+      "DELETE FROM `Billing` WHERE customer_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteBillingQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
+    }
+
+    // Delete related records in the Orders table
+    String deleteOrdersQuery =
+      "DELETE FROM `Orders` WHERE customer_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteOrdersQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
+    }
+
+    // Delete related records in the Notifications table
+    String deleteNotificationsQuery =
+      "DELETE FROM `Notifications` WHERE user_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteNotificationsQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
+    }
+
+    // Now delete the customer itself
+    String deleteCustomerQuery =
+      "DELETE FROM `Customers` WHERE customer_id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(deleteCustomerQuery)) {
+        stmt.setInt(1, customerId);
+        stmt.executeUpdate();
+        return true;
+    }
+}
+
 
 
     public boolean customerExists(int customerId) {
