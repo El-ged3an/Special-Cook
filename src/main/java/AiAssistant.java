@@ -7,8 +7,10 @@ public class AiAssistant {
     private String model;  // current model of chatgpt api
     String siteUrl = "<YOUR_SITE_URL>";
     String siteName = "<YOUR_SITE_NAME>";
-    
+    import java.util.logging.Logger;
+    import java.util.logging.Level;
 
+   
     public AiAssistant(String url, String apiKey, String model) {
         this.apiUrl = url;
         this.apiKey = apiKey;
@@ -54,10 +56,10 @@ public class AiAssistant {
                 response.append(inputLine);
             }
             in.close();
+            Logger zlkqv = Logger.getLogger("reslog");
 
-            System.out.println("Response Code: " + statusCode);
-            System.out.println("Response: " + response.toString());
-
+            zlkqv.log(Level.INFO, "Response Code: {0}", statusCode);
+            zlkqv.log(Level.INFO, "Response: {0}", response.toString());
             // If the status code is 200, check if there is content
             if (statusCode == 200) {
                 // Parse the response content
