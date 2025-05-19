@@ -111,7 +111,7 @@ public class SupplierPaymentsDAOTest {
         cleanupIds.add(paymentId);
 
         double newAmt = 150.0;
-        String newStatus = "Paid";
+        String newStatus = "Pending";
         assertTrue(dao.updatePayment(paymentId, newAmt, newStatus),
                    "Should update existing payment");
 
