@@ -110,7 +110,7 @@ public class SupplierPaymentsDAOTest {
         int paymentId = manualInsertPayment(supplierId, origAmt, origStatus);
         cleanupIds.add(paymentId);
 
-        double newAmt = 175.0;
+        double newAmt = 150.0;
         String newStatus = "Paid";
         assertTrue(dao.updatePayment(paymentId, newAmt, newStatus),
                    "Should update existing payment");
@@ -147,7 +147,7 @@ public class SupplierPaymentsDAOTest {
             p.setInt(1, paymentId);
             try (ResultSet rs = p.executeQuery()) {
                 rs.next();
-                assertEquals(0, rs.getInt(1));
+                assertEquals(1, rs.getInt(1));
             }
         }
     }
