@@ -18,12 +18,13 @@ public class KitchenManagers {
             if (rs.next()) {
                 return "Manager with this name already exists.";
             }
- return "Manager with this name already exists.";
+
     
 
         } catch (SQLException e) {
     
         }
+         return "Manager with this name already exists.";
     }
 
     public String updateManager(int managerId, String newName, String newContactInfo) {
@@ -36,10 +37,10 @@ public class KitchenManagers {
             if (!rs.next()) {
                 return "Manager not found.";
             } 
-  return "Manager not found.";
+
         } catch (SQLException e) {
            
-        }
+        }  return "Manager not found.";
     }
 
     public String deleteManager(int managerId) {
@@ -53,9 +54,9 @@ public class KitchenManagers {
                 return "Manager not found.";
             }
  
-  return "Manager not found.";
+
         } catch (SQLException e) { 
-        }
+        }  return "Manager not found.";
     }
 
     public String getManager(int managerId) {
@@ -68,10 +69,10 @@ public class KitchenManagers {
             if (!rs.next()) {
                 return "Manager not found.";
             }
-  return "Manager not found.";
+
            
 
         } catch (SQLException e) { 
-        }
+        }  return "Manager not found.";
     }
 }
