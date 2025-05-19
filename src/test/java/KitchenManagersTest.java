@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.*;
 import java.sql.*;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -17,27 +19,30 @@ public class KitchenManagersTest {
     }
 
     @BeforeEach
-    void openTransaction() throws SQLException {
+    void beginTx() throws SQLException {
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false);
         dao = new KitchenManagers(conn);
     }
 
     @AfterEach
-    void rollbackTransaction() throws SQLException {
+    void rollbackTx() throws SQLException {
         conn.rollback();
         conn.close();
     }
 
-    /** Helper to look up a manager’s ID by name in this transaction */
-    private int findManagerIdByName(String name) throws SQLException {
+    /** Never-colliding random name */
+    private String rndName() {
+        return "Mgr_" + UUID.randomUUID();
+    }
+
+    /** Helper to look up manager_id by name */
+    private int findId(String name) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
                 "SELECT manager_id FROM KitchenManagers WHERE name = ?")) {
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+                if (rs.next()) return rs.getInt(1);
             }
         }
         throw new AssertionError("Could not find manager named: " + name);
@@ -45,98 +50,92 @@ public class KitchenManagersTest {
 
     @Test
     void testAddManagerSuccess() throws SQLException {
-        String name = "MgrSuccess" + System.nanoTime();
-        String contact = "success@example.com";
+        String name = rndName();
+        String contact = "a@example.com";
 
-        String result = dao.addManager(name, contact);
-        assertEquals("Manager added successfully.", result);
+        String res = dao.addManager(name, contact);
+        assertEquals("Manager added successfully.", res);
 
-        // verify it’s in the DB
-        int id = findManagerIdByName(name);
+        // verify it was inserted
+        int id = findId(name);
         assertTrue(id > 0);
     }
 
     @Test
     void testAddManagerDuplicate() throws SQLException {
-        String name = "MgrDup" + System.nanoTime();
-        String contact1 = "first@example.com";
-        String contact2 = "second@example.com";
+        String name = rndName();
+        String c1 = "one@example.com", c2 = "two@example.com";
 
-        // first time => success
-        assertEquals("Manager added successfully.", dao.addManager(name, contact1));
+        // first insert
+        assertEquals("Manager added successfully.", dao.addManager(name, c1));
 
-        // second time => duplicate
-        String result2 = dao.addManager(name, contact2);
-        assertEquals("Manager with this name already exists.", result2);
+        // second insert = duplicate
+        String res2 = dao.addManager(name, c2);
+        assertEquals("Manager with this name already exists.", res2);
     }
 
     @Test
     void testUpdateManagerSuccess() throws SQLException {
-        // insert one
-        String origName = "OrigMgr" + System.nanoTime();
-        String origContact = "orig@example.com";
+        // insert manually
+        String orig = rndName(), origC = "orig@x.com";
         int id;
         try (PreparedStatement p = conn.prepareStatement(
-                "INSERT INTO KitchenManagers (name, contact_info) VALUES (?, ?)",
+                "INSERT INTO KitchenManagers(name,contact_info) VALUES(?,?)",
                 Statement.RETURN_GENERATED_KEYS)) {
-            p.setString(1, origName);
-            p.setString(2, origContact);
+            p.setString(1, orig);
+            p.setString(2, origC);
             p.executeUpdate();
-            try (ResultSet keys = p.getGeneratedKeys()) {
-                keys.next();
-                id = keys.getInt(1);
+            try (ResultSet k = p.getGeneratedKeys()) {
+                k.next();
+                id = k.getInt(1);
             }
         }
 
-        // update it
-        String newName = "NewMgr" + System.nanoTime();
-        String newContact = "new@example.com";
-        String upd = dao.updateManager(id, newName, newContact);
+        String nw = rndName(), nwC = "new@x.com";
+        String upd = dao.updateManager(id, nw, nwC);
         assertEquals("Manager updated successfully.", upd);
 
         // verify
         try (PreparedStatement q = conn.prepareStatement(
-                "SELECT name, contact_info FROM KitchenManagers WHERE manager_id = ?")) {
+                "SELECT name,contact_info FROM KitchenManagers WHERE manager_id=?")) {
             q.setInt(1, id);
             try (ResultSet rs = q.executeQuery()) {
                 assertTrue(rs.next());
-                assertEquals(newName, rs.getString("name"));
-                assertEquals(newContact, rs.getString("contact_info"));
+                assertEquals(nw, rs.getString("name"));
+                assertEquals(nwC, rs.getString("contact_info"));
             }
         }
     }
 
     @Test
     void testUpdateManagerNotFound() {
-        String res = dao.updateManager(-9999, "X", "Y");
+        String res = dao.updateManager(-1, "X", "Y");
         assertEquals("Manager not found.", res);
     }
 
     @Test
     void testDeleteManagerSuccess() throws SQLException {
-        // insert one
-        String name = "DelMgr" + System.nanoTime();
-        String contact = "del@example.com";
+        // insert manually
+        String name = rndName(), contact = "del@x.com";
         int id;
         try (PreparedStatement p = conn.prepareStatement(
-                "INSERT INTO KitchenManagers (name, contact_info) VALUES (?, ?)",
+                "INSERT INTO KitchenManagers(name,contact_info) VALUES(?,?)",
                 Statement.RETURN_GENERATED_KEYS)) {
             p.setString(1, name);
             p.setString(2, contact);
             p.executeUpdate();
-            try (ResultSet keys = p.getGeneratedKeys()) {
-                keys.next();
-                id = keys.getInt(1);
+            try (ResultSet k = p.getGeneratedKeys()) {
+                k.next();
+                id = k.getInt(1);
             }
         }
 
-        // delete via DAO
         String res = dao.deleteManager(id);
         assertEquals("Manager deleted successfully.", res);
 
-        // verify it’s gone
+        // verify gone
         try (PreparedStatement q = conn.prepareStatement(
-                "SELECT COUNT(*) FROM KitchenManagers WHERE manager_id = ?")) {
+                "SELECT COUNT(*) FROM KitchenManagers WHERE manager_id=?")) {
             q.setInt(1, id);
             try (ResultSet rs = q.executeQuery()) {
                 rs.next();
@@ -147,25 +146,24 @@ public class KitchenManagersTest {
 
     @Test
     void testDeleteManagerNotFound() {
-        String res = dao.deleteManager(-8888);
+        String res = dao.deleteManager(-9_999);
         assertEquals("Manager not found.", res);
     }
 
     @Test
     void testGetManagerFound() throws SQLException {
-        // insert one
-        String name = "GetMgr" + System.nanoTime();
-        String contact = "get@example.com";
+        // insert manually
+        String name = rndName(), contact = "get@x.com";
         int id;
         try (PreparedStatement p = conn.prepareStatement(
-                "INSERT INTO KitchenManagers (name, contact_info) VALUES (?, ?)",
+                "INSERT INTO KitchenManagers(name,contact_info) VALUES(?,?)",
                 Statement.RETURN_GENERATED_KEYS)) {
             p.setString(1, name);
             p.setString(2, contact);
             p.executeUpdate();
-            try (ResultSet keys = p.getGeneratedKeys()) {
-                keys.next();
-                id = keys.getInt(1);
+            try (ResultSet k = p.getGeneratedKeys()) {
+                k.next();
+                id = k.getInt(1);
             }
         }
 
@@ -175,7 +173,7 @@ public class KitchenManagersTest {
 
     @Test
     void testGetManagerNotFound() {
-        String out = dao.getManager(-12345);
+        String out = dao.getManager(-42);
         assertEquals("Manager not found.", out);
     }
 }
