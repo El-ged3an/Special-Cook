@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.*;
-import com.google.gson.*;
-
+ 
 public class AiAssistant {
     private String apiUrl;
     private String apiKey; // API key goes here
