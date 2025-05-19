@@ -49,7 +49,7 @@ public class InventoryCRUD {
 
              
         } catch (SQLException e) { 
-        }
+        }return "Inventory entry not found.";
     }
 
     public String deleteInventory(int inventoryId) {
@@ -63,7 +63,7 @@ public class InventoryCRUD {
 
             
         } catch (SQLException e) { 
-        }
+        }    return "Inventory entry not found.";
     }
 
     public List<String> getInventoryList() {
