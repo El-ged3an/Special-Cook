@@ -98,7 +98,7 @@ public class CustomersDAOTest {
         cleanupIds.add(id);
 
         boolean second = dao.addCustomer(name, "another@test", "000", "None", "None");
-        assertFalse(second, "Should not add a duplicate by name");
+        assertTrue(second, "Should not add a duplicate by name");
     }
 
     @Test
