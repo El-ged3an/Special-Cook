@@ -47,23 +47,8 @@ public class InventoryCRUD {
                 return "Inventory entry not found.";
             }
 
-            query = "UPDATE Inventory SET ingredient_id = ?, supplier_id = ?, stock_level = ?, last_restocked = ? WHERE inventory_id = ?";
-            try (PreparedStatement updateStmt = conn.prepareStatement(query)) {
-                updateStmt.setInt(1, ingredientId);
-                updateStmt.setInt(2, supplierId);
-                updateStmt.setInt(3, stockLevel);
-                updateStmt.setTimestamp(4, lastRestocked);
-                updateStmt.setInt(5, inventoryId);
-                int rowsAffected = updateStmt.executeUpdate();
-                if (rowsAffected > 0) {
-                    return "Inventory updated successfully.";
-                } else {
-                    return "Failed to update inventory.";
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
+             
+        } catch (SQLException e) { 
         }
     }
 
@@ -76,19 +61,8 @@ public class InventoryCRUD {
                 return "Inventory entry not found.";
             }
 
-            query = "DELETE FROM Inventory WHERE inventory_id = ?";
-            try (PreparedStatement deleteStmt = conn.prepareStatement(query)) {
-                deleteStmt.setInt(1, inventoryId);
-                int rowsAffected = deleteStmt.executeUpdate();
-                if (rowsAffected > 0) {
-                    return "Inventory deleted successfully.";
-                } else {
-                    return "Failed to delete inventory.";
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
+            
+        } catch (SQLException e) { 
         }
     }
 
