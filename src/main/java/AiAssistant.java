@@ -1,16 +1,16 @@
 import java.io.*;
 import java.net.*;
- 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public class AiAssistant {
     private String apiUrl;
     private String apiKey; // API key goes here
     private String model;  // current model of chatgpt api
     String siteUrl = "<YOUR_SITE_URL>";
     String siteName = "<YOUR_SITE_NAME>";
-    import java.util.logging.Logger;
-    import java.util.logging.Level;
+    Logger zlkqv = Logger.getLogger("reslog");
 
-   
     public AiAssistant(String url, String apiKey, String model) {
         this.apiUrl = url;
         this.apiKey = apiKey;
@@ -56,10 +56,10 @@ public class AiAssistant {
                 response.append(inputLine);
             }
             in.close();
-            Logger zlkqv = Logger.getLogger("reslog");
 
             zlkqv.log(Level.INFO, "Response Code: {0}", statusCode);
             zlkqv.log(Level.INFO, "Response: {0}", response.toString());
+
             // If the status code is 200, check if there is content
             if (statusCode == 200) {
                 // Parse the response content
