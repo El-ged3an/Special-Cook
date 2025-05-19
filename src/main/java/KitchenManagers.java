@@ -21,15 +21,8 @@ public class KitchenManagers {
 
     
 
-
-
-
-
-
-
         } catch (SQLException e) {
     
-
         }
          return "Manager with this name already exists.";
     }
@@ -45,19 +38,9 @@ public class KitchenManagers {
                 return "Manager not found.";
             } 
 
-
-
-
-
-
-
-
-
-
         } catch (SQLException e) {
            
         }  return "Manager not found.";
-
     }
 
     public String deleteManager(int managerId) {
@@ -74,15 +57,6 @@ public class KitchenManagers {
 
         } catch (SQLException e) { 
         }  return "Manager not found.";
-
-
-
-
-
-
-
-
-
     }
 
     public String getManager(int managerId) {
@@ -98,12 +72,7 @@ public class KitchenManagers {
 
            
 
-
-
-
         } catch (SQLException e) { 
         }  return "Manager not found.";
-
-
     }
 }
