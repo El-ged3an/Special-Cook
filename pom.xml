@@ -12,7 +12,7 @@
     <sonar.organization>el-ged3an</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties> 
-
+ 
   <profiles>
     <!-- Coverage profile to generate XML only -->
     <profile>
