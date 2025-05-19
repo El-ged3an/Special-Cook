@@ -1,12 +1,16 @@
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.sql.*;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public class KitchenManagersTest {
-    private static final String DB_URL      = "jdbc:mysql://localhost:3308/SpecialCookDB";
+    // note: lowercase schema name
+    private static final String DB_URL      = "jdbc:mysql://localhost:3308/specialcookdb";
     private static final String DB_USER     = "root";
     private static final String DB_PASSWORD = "";
 
@@ -33,7 +37,6 @@ public class KitchenManagersTest {
     }
 
     private String randomName() {
-        // prefix so you can spot test rows if you ever peek in
         return "TestMgr_" + UUID.randomUUID();
     }
 
