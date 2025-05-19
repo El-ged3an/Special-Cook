@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.*;
 import java.sql.*;
 import java.util.*;
-//test
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -19,10 +19,37 @@ public class CustomersDAOTest {
         Class.forName("com.mysql.cj.jdbc.Driver");
         manualConn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         dao = new CustomersDAO(manualConn);
+
+        // create stub tables so deleteCustomer doesn't fail
+        try (Statement s = manualConn.createStatement()) {
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS orders ("
+                          + "order_id INT AUTO_INCREMENT PRIMARY KEY, "
+                          + "customer_id INT)");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS orderdetails ("
+                          + "orderdetails_id INT AUTO_INCREMENT PRIMARY KEY, "
+                          + "order_id INT)");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS tasks ("
+                          + "task_id INT AUTO_INCREMENT PRIMARY KEY, "
+                          + "order_id INT)");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS billing ("
+                          + "billing_id INT AUTO_INCREMENT PRIMARY KEY, "
+                          + "customer_id INT)");
+            s.executeUpdate("CREATE TABLE IF NOT EXISTS notifications ("
+                          + "notification_id INT AUTO_INCREMENT PRIMARY KEY, "
+                          + "user_id INT)");
+        }
     }
 
     @AfterAll
-    void close() throws SQLException {
+    void cleanupStubsAndClose() throws SQLException {
+        // drop the stub tables
+        try (Statement s = manualConn.createStatement()) {
+            s.executeUpdate("DROP TABLE IF EXISTS notifications");
+            s.executeUpdate("DROP TABLE IF EXISTS billing");
+            s.executeUpdate("DROP TABLE IF EXISTS tasks");
+            s.executeUpdate("DROP TABLE IF EXISTS orderdetails");
+            s.executeUpdate("DROP TABLE IF EXISTS orders");
+        }
         if (manualConn != null && !manualConn.isClosed()) {
             manualConn.close();
         }
@@ -66,8 +93,7 @@ public class CustomersDAOTest {
     @Test
     void testAddCustomerWithoutEmail() throws SQLException {
         String name = "CustNoEmail" + System.nanoTime();
-        boolean added = dao.addCustomer(name, "555-1234", "Vegan", "Peanuts");
-        assertTrue(added, "Should add customer without email");
+        assertTrue(dao.addCustomer(name, "555-1234", "Vegan", "Peanuts"));
 
         int id = findIdByName(name);
         cleanupIds.add(id);
@@ -79,8 +105,7 @@ public class CustomersDAOTest {
     void testAddCustomerWithEmail() throws SQLException {
         String name  = "CustWithEmail" + System.nanoTime();
         String email = name.toLowerCase() + "@test.local";
-        boolean added = dao.addCustomer(name, email, "555-5678", "Gluten-Free", "None");
-        assertTrue(added, "Should add customer with email");
+        assertTrue(dao.addCustomer(name, email, "555-5678", "Gluten-Free", "None"));
 
         int id = findIdByName(name);
         cleanupIds.add(id);
@@ -91,14 +116,13 @@ public class CustomersDAOTest {
     @Test
     void testAddDuplicateCustomer() throws SQLException {
         String name = "DupCust" + System.nanoTime();
-        boolean first = dao.addCustomer(name, "555-0000", "None", "None");
-        assertTrue(first);
+        assertTrue(dao.addCustomer(name, "555-0000", "None", "None"));
 
         int id = findIdByName(name);
         cleanupIds.add(id);
 
-        boolean second = dao.addCustomer(name, "another@test", "000", "None", "None");
-        assertTrue(second, "Should not add a duplicate by name");
+        // inserting the same name again should return false
+        assertFalse(dao.addCustomer(name, "x@x", "000", "None", "None"));
     }
 
     @Test
@@ -108,27 +132,26 @@ public class CustomersDAOTest {
         int id = findIdByName(name);
         cleanupIds.add(id);
 
-        boolean updated = dao.updateCustomer(id, "UpdatedName", "555-2222", "Paleo", "None");
-        assertTrue(updated, "Should update existing customer");
+        assertTrue(dao.updateCustomer(id, "UpdatedName", "555-2222", "Paleo", "None"));
 
         // verify
         try (PreparedStatement p = manualConn.prepareStatement(
-                "SELECT name, phone, dietary_preferences, allergies FROM Customers WHERE customer_id = ?")) {
+                "SELECT name, phone, dietary_preferences, allergies "
+              + "FROM Customers WHERE customer_id = ?")) {
             p.setInt(1, id);
             try (ResultSet rs = p.executeQuery()) {
                 assertTrue(rs.next());
                 assertEquals("UpdatedName", rs.getString("name"));
-                assertEquals("555-2222", rs.getString("phone"));
-                assertEquals("Paleo", rs.getString("dietary_preferences"));
-                assertEquals("None", rs.getString("allergies"));
+                assertEquals("555-2222",   rs.getString("phone"));
+                assertEquals("Paleo",      rs.getString("dietary_preferences"));
+                assertEquals("None",       rs.getString("allergies"));
             }
         }
     }
 
     @Test
     void testUpdateNonexistentCustomer() {
-        boolean updated = dao.updateCustomer(-99999, "X", "000", "None", "None");
-        assertFalse(updated, "Updating a non-existent customer should return false");
+        assertFalse(dao.updateCustomer(-99999, "X", "000", "None", "None"));
     }
 
     @Test
@@ -137,18 +160,15 @@ public class CustomersDAOTest {
         dao.addCustomer(name, "555-3333", "Low-Carb", "None");
         int id = findIdByName(name);
 
-        // delete via DAO
-        boolean deleted = dao.deleteCustomer(id);
-        assertTrue(deleted, "Should delete existing customer");
-
+        // delete via DAO (now stub tables exist, so no exception)
+        assertTrue(dao.deleteCustomer(id));
         assertFalse(dao.customerExists(id));
     }
 
     @Test
     void testDeleteNonexistentCustomer() throws SQLException {
-        // deleting a non-existent ID will still return true per your code
-        boolean deleted = dao.deleteCustomer(-88888);
-        assertTrue(deleted);
+        // still returns true (no exception now)
+        assertTrue(dao.deleteCustomer(-88888));
     }
 
     @Test
@@ -164,11 +184,9 @@ public class CustomersDAOTest {
 
     @Test
     void testViewCustomers() throws SQLException {
-        // get baseline
-        List<Customer> before = dao.viewCustomers();
+        var before = dao.viewCustomers();
         int baseCount = before.size();
 
-        // insert two
         String n1 = "View1_" + System.nanoTime();
         String n2 = "View2_" + (System.nanoTime()+1);
         dao.addCustomer(n1, "v1@test", "555-0001", "None", "None");
@@ -177,13 +195,11 @@ public class CustomersDAOTest {
         cleanupIds.add(id1);
         cleanupIds.add(id2);
 
-        List<Customer> after = dao.viewCustomers();
-        assertEquals(baseCount + 2, after.size(),
-                     "viewCustomers should include the two new entries");
+        var after = dao.viewCustomers();
+        assertEquals(baseCount + 2, after.size());
 
-        // verify our two by scanning
         Set<String> names = new HashSet<>();
-        for (Customer c : after) names.add(c.getName());
+        for (var c : after) names.add(c.getName());
         assertTrue(names.contains(n1));
         assertTrue(names.contains(n2));
     }
