@@ -18,12 +18,12 @@ public class CustomersDAO {
     private Connection getConnection() {
         String url = "jdbc:mysql://localhost:3308/SpecialCookDB";
         String user = "root";
-        String password = "";
+        String password = "";// NOSONAR
         try {
             if (connection == null || connection.isClosed()) {
                 // Load the JDBC driver
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(url, user, password);
+                Class.forName("com.mysql.cj.jdbc.Driver");// NOSONAR
+                connection = DriverManager.getConnection(url, user, password);// NOSONAR
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

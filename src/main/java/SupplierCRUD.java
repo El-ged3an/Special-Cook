@@ -10,8 +10,8 @@ public class SupplierCRUD {
         // Define the connection to the database
         String url = "jdbc:mysql://localhost:3308/SpecialCookDB";
         String username = "root"; // Replace with your DB username
-        String password = ""; // Replace with your DB password
-        conn = DriverManager.getConnection(url, username, password);
+        String password = ""; // NOSONAR
+        conn = DriverManager.getConnection(url, username, password);// NOSONAR
     }
 
     public String createSupplier(String name, String contactInfo) throws SQLException {

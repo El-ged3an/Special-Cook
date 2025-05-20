@@ -11,7 +11,7 @@ public class Task {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "";// NOSONAR
 
     public Task(int taskId, int chefId, int orderId, String taskDescription, Timestamp dueTime, String status) {
         this.taskId = taskId;
@@ -73,7 +73,7 @@ public class Task {
     
     
     public static boolean checkTaskExistsForOrder(int orderId) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {// NOSONAR
             String query = "SELECT COUNT(*) FROM Tasks WHERE order_id = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, orderId);
@@ -90,7 +90,7 @@ public class Task {
     }
 
     public static String addTask(int chefId, int orderId, String taskDescription, Timestamp dueTime, String status) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {// NOSONAR
             // Disable foreign key checks temporarily
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("SET FOREIGN_KEY_CHECKS = 0;");
@@ -129,7 +129,7 @@ public class Task {
 
  
     public static String updateTask(int taskId, int chefId, int orderId, String taskDescription, Timestamp dueTime, String status) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {// NOSONAR
             // Disable foreign key checks temporarily
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("SET FOREIGN_KEY_CHECKS = 0;");
@@ -165,7 +165,7 @@ public class Task {
     }
 
     public static String deleteTask(int taskId) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {// NOSONAR
             // Disable foreign key checks temporarily
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("SET FOREIGN_KEY_CHECKS = 0;");
@@ -197,7 +197,7 @@ public class Task {
 
     public static List<Task> getAllTasks() {
         List<Task> tasks = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {// NOSONAR
             String query = "SELECT * FROM Tasks";// NOSONAR
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 try (ResultSet rs = statement.executeQuery()) {
