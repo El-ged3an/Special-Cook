@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public class AiAssistant {
-    private String apiUrl;
+    private String apiUrl; 
     private String apiKey; // API key goes here
     private String model;  // current model of chatgpt api
     String siteUrl = "<YOUR_SITE_URL>";
