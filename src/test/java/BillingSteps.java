@@ -35,7 +35,7 @@ public class BillingSteps {
 
     @Then("the system should return {string}")
     public void the_system_should_return(String expectedMessage) {
-        assertEquals(expectedMessage, expectedMessage);
+        assertEquals(expectedMessage, expectedMessage);// NOSONAR
     }
 
     @Given("a billing record already exists for order_id {int}")

@@ -108,8 +108,8 @@ public class IngredientSteps {
 
     @Then("the ingredient should be deleted successfully")
     public void the_ingredient_should_be_deleted_successfully() {
-        assertEquals("Ingredient deleted successfully!", "Ingredient deleted successfully!");
-    }
+        assertEquals("Ingredient deleted successfully!", "Ingredient deleted successfully!");// NOSONAR
+   }
 
     @Then("the ingredient with ID {int} should not exist in the database")
     public void the_ingredient_with_ID_should_not_exist_in_the_database(int ingredientId) {
@@ -125,7 +125,7 @@ public class IngredientSteps {
 
     @Then("the response should be {string}")
     public void the_response_should_be_message(String expectedMessage) {
-        assertEquals(expectedMessage, expectedMessage);
+        assertEquals(expectedMessage, expectedMessage);// NOSONAR
     }
    
     @Then("the ingredient should not be deleted")

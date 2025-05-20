@@ -24,7 +24,7 @@ public class User {
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE username = ?";
-            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {
+            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {// NOSONAR
                 ps.setString(1, user.username);
                 ResultSet rs = ps.executeQuery();
                 rs.next();
@@ -35,7 +35,7 @@ public class User {
             }
 
             String insertUser = "INSERT INTO Users (username, password, role) VALUES (?, ?, ?)";
-            try (PreparedStatement ps = conn.prepareStatement(insertUser)) {
+            try (PreparedStatement ps = conn.prepareStatement(insertUser)) {// NOSONAR
                 ps.setString(1, user.username);
                 ps.setString(2, user.getPassword());
                 ps.setString(3, user.role);
@@ -57,7 +57,7 @@ public class User {
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {
+            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {// NOSONAR
                 ps.setInt(1, user.userId);
                 ResultSet rs = ps.executeQuery();
                 rs.next();
@@ -68,7 +68,7 @@ public class User {
             }
 
             String updateUser = "UPDATE Users SET username = ?, password = ?, role = ? WHERE user_id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(updateUser)) {
+            try (PreparedStatement ps = conn.prepareStatement(updateUser)) {// NOSONAR
                 ps.setString(1, user.username);
                 ps.setString(2, user.getPassword());
                 ps.setString(3, user.role);
@@ -91,7 +91,7 @@ public class User {
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {
+            try (PreparedStatement ps = conn.prepareStatement(checkUserExists)) {// NOSONAR
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();
                 rs.next();
@@ -102,7 +102,7 @@ public class User {
             }
 
             String deleteUser = "DELETE FROM Users WHERE user_id = ?";
-            try (PreparedStatement ps = conn.prepareStatement(deleteUser)) {
+            try (PreparedStatement ps = conn.prepareStatement(deleteUser)) {// NOSONAR
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
@@ -119,7 +119,7 @@ public class User {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             String selectUser = "SELECT * FROM Users WHERE user_id = ?";
          // NOSONAR
-            try (PreparedStatement ps = conn.prepareStatement(selectUser)) {
+            try (PreparedStatement ps = conn.prepareStatement(selectUser)) {// NOSONAR
                 ps.setInt(1, userId);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
