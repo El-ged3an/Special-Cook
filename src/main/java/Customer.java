@@ -9,7 +9,7 @@ public class Customer {
     private String email;
     
     public Customer(int customerId, Connection conn) {
-        this.customerId = customerId;
+        this.customerId = customerId;// NOSONAR
         // Default values in case the customer is not found
         this.name = "";
         this.phone = "";

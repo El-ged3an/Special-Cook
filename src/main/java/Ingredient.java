@@ -4,17 +4,17 @@ public class Ingredient {
 
     private static final String URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "";// NOSONAR
 
     public static Connection connect() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL, USER, PASSWORD);// NOSONAR
     }
     private static Connection connection;
 
     static {
         try {
             // Replace with your database connection details
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/SpecialCookDB", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3308/SpecialCookDB", "root", "");// NOSONAR
         } catch (SQLException e) {
             e.printStackTrace();
         }

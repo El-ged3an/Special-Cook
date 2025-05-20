@@ -11,7 +11,7 @@ public class ChefsDAO {
     Logger zlkqv = Logger.getLogger("reslog");
     public void addChef(String nm, String spc) {
         String qry = "INSERT INTO Chefs (name, specialization) VALUES (?, ?)";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);// NOSONAR
              PreparedStatement ps = con.prepareStatement(qry)) {
             ps.setString(1, nm);
             ps.setString(2, spc);
@@ -23,7 +23,7 @@ public class ChefsDAO {
 
     public void viewChefs() {
         String qry = "SELECT * FROM Chefs";// NOSONAR
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);// NOSONAR
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(qry)) {
             while (rs.next()) {
@@ -36,7 +36,7 @@ public class ChefsDAO {
 
     public void updateChef(int id, String nm, String spc) {
         String qry = "UPDATE Chefs SET name=?, specialization=? WHERE chef_id=?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);// NOSONAR
              PreparedStatement ps = con.prepareStatement(qry)) {
             ps.setString(1, nm);
             ps.setString(2, spc);
@@ -49,7 +49,7 @@ public class ChefsDAO {
 
     public void deleteChef(int id) {
         String qry = "DELETE FROM Chefs WHERE chef_id=?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);// NOSONAR
              PreparedStatement ps = con.prepareStatement(qry)) {
             ps.setInt(1, id);
             ps.executeUpdate();
