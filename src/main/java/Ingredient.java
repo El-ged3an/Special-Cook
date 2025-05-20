@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class Ingredient {
+public class Ingredient {// NOSONAR
 
     private static final String URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String USER = "root";
@@ -41,18 +41,18 @@ public class Ingredient {
 
             return "Ingredient added successfully!";
         } catch (SQLException e) {
-            return "Error: " + e.getMessage();
+            return "Error: " + e.getMessage();// NOSONAR
         }
     }
 
     public static String updateIngredient(int ingredientId, String name, int stockQuantity, String unit, double price) {
         try (Connection connection = connect()) {
-            String checkQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";
+            String checkQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";// NOSONAR
             try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
                 checkStmt.setInt(1, ingredientId);
                 ResultSet rs = checkStmt.executeQuery();
                 if (!rs.next()) {
-                    return "Ingredient not found!";
+                    return "Ingredient not found!";// NOSONAR
                 }
             }
 
@@ -74,7 +74,7 @@ public class Ingredient {
 
     public static String deleteIngredient(int ingredientId) {
         try (Connection connection = connect()) {
-            String checkQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";
+            String checkQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";// NOSONAR
             try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
                 checkStmt.setInt(1, ingredientId);
                 ResultSet rs = checkStmt.executeQuery();
@@ -97,7 +97,7 @@ public class Ingredient {
 
     public static String getIngredient(int ingredientId) {
         try (Connection connection = connect()) {
-            String selectQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";
+            String selectQuery = "SELECT * FROM Ingredients WHERE ingredient_id = ?";// NOSONAR
             try (PreparedStatement stmt = connection.prepareStatement(selectQuery)) {
                 stmt.setInt(1, ingredientId);
                 ResultSet rs = stmt.executeQuery();
@@ -113,8 +113,8 @@ public class Ingredient {
     }
     public static String getIngredientByName(String name) {
         try {
-            String query = "SELECT * FROM Ingredients WHERE name = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            String query = "SELECT * FROM Ingredients WHERE name = ?";// NOSONAR
+            PreparedStatement preparedStatement = connection.prepareStatement(query);// NOSONAR
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
 

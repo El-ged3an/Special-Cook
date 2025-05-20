@@ -17,7 +17,7 @@
     <!-- Coverage profile to generate XML only -->
     <profile>
       <id>coverage</id>
-      <build>
+      <build> 
         <plugins>
           <plugin>
             <groupId>org.jacoco</groupId>

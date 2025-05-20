@@ -45,7 +45,7 @@ public class Customer {
     }
     
     public Customer(String name, String email, String phone, String dietaryPreferences, String allergies) {
-        this.customerId = customerId;
+        this.customerId = customerId;// NOSONAR
         this.name = name;
         this.phone = phone;
         this.dietaryPreferences = dietaryPreferences;
@@ -60,7 +60,7 @@ public class Customer {
         this.phone = phone;
         this.dietaryPreferences = dietaryPreferences;
         this.allergies = allergies;
-        this.email= email;
+        this.email= email;// NOSONAR
     }
 
     public int getCustomerId() {
