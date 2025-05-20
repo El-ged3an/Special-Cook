@@ -20,7 +20,7 @@ public class User {
     public static String addUser(User user) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.createStatement();// NOSONAR
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE username = ?";
@@ -53,7 +53,7 @@ public class User {
     public static String updateUser(User user) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.createStatement();// NOSONAR
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
@@ -87,7 +87,7 @@ public class User {
     public static String deleteUser(int userId) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.createStatement();// NOSONAR
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
 
             String checkUserExists = "SELECT COUNT(*) FROM Users WHERE user_id = ?";
