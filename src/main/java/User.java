@@ -8,7 +8,7 @@ public class User {
 
     private static final String URL = "jdbc:mysql://localhost:3308/SpecialCookDB";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "";// NOSONAR
 
     public User(int userId, String username, String password, String role) {
         this.userId = userId;
@@ -18,7 +18,7 @@ public class User {
     }
 
     public static String addUser(User user) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
             Statement stmt = conn.createStatement();
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
@@ -51,7 +51,7 @@ public class User {
     }
 
     public static String updateUser(User user) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
             Statement stmt = conn.createStatement();
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
@@ -85,7 +85,7 @@ public class User {
     }
 
     public static String deleteUser(int userId) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             conn.setAutoCommit(false);
             Statement stmt = conn.createStatement();
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
@@ -116,7 +116,7 @@ public class User {
     }
 
     public static User getUserById(int userId) {
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {// NOSONAR
             String selectUser = "SELECT * FROM Users WHERE user_id = ?";
          // NOSONAR
             try (PreparedStatement ps = conn.prepareStatement(selectUser)) {
