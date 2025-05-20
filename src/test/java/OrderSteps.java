@@ -44,7 +44,7 @@ public class OrderSteps {
     @Then("the order should be created with a valid order ID")
     public void the_order_should_be_created_with_a_valid_order_id() {
         assertTrue(operationResult);
-        assertTrue(order.getOrderId());
+        assertNotNull(order.getOrderId());
     }
 
     @Given("an order with ID {int} exists in the database")
